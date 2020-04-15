@@ -12,6 +12,11 @@ This project is closely inspired by mikeeq/mbp-fedora-kernel. Thank you @mikeeq 
 
 IF YOU ENJOY THIS CODE, CONSIDER CONTRIBUTING TO THE AUTHORS @MCMrARM @roadrunner2 @aunali1 @ppaulweber @mikeeq, they did all the hard work.
 
+## CI status
+
+Drone kernel build status:
+[![Build Status](https://cloud.drone.io/api/badges/marcosfad/mbp-ubuntu-kernel/status.svg)](https://cloud.drone.io/marcosfad/mbp-ubuntu-kernel)
+
 ### Known issues
 
 - Dynamic audio input/output change (on connecting/disconnecting headphones jack)

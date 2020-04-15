@@ -20,7 +20,8 @@ rm -rf linux-$KERNEL_VERSION*
 ### Dependencies
 apt update
 apt install -y build-essential libncurses-dev bison flex libssl-dev libelf-dev \
-  openssl dkms libudev-dev libpci-dev libiberty-dev autoconf wget xz-utils git
+  openssl dkms libudev-dev libpci-dev libiberty-dev autoconf wget xz-utils git \
+  bc rsync cpio
 
 ### get Kernel and signature
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 647F28654894E3BD457199BE38DBBDC86092693E # Linus Torvalds
@@ -44,24 +45,24 @@ echo >&2 "===]> Info: Applying patches... ";
 while IFS= read -r file
 do
   echo "adding $file"
-  patch -p1 < $file
+  patch -p1 < "$file"
 done < <(find ../patches -type f -name "*.patch" | sort)
 
 #### Change buildid to mbp
 echo >&2 "===]> Info: Bulding src... ";
-cp /boot/config-`uname -r` .config
+cp ../template/default-config .config
 
 make olddefconfig
 make clean
-make -j `getconf _NPROCESSORS_ONLN` deb-pkg LOCALVERSION=-mbp
+make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp
 
 #### Build src rpm
-echo >&2 "===]> Info: Bulding kernel ... ";
-make modules_install -j `getconf _NPROCESSORS_ONLN`
+#echo >&2 "===]> Info: Install kernel ... ";
+#make modules_install -j "$(getconf _NPROCESSORS_ONLN)"
 #make install -j `getconf _NPROCESSORS_ONLN`
 
 #### Copy artifacts to shared volume
-echo >&2 "===]> Info: Copying rpms and calculating SHA256 ... ";
+echo >&2 "===]> Info: Copying debs and calculating SHA256 ... ";
 cp -rfv ../*.deb /tmp/artifacts/
 sha256sum ../*.deb > /tmp/artifacts/sha256
 
