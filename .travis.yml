@@ -1,0 +1,15 @@
+---
+language: bash
+
+os:
+  - linux
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+
+script:
+  - ./publish.sh

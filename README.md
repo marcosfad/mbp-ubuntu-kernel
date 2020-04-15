@@ -17,6 +17,9 @@ IF YOU ENJOY THIS CODE, CONSIDER CONTRIBUTING TO THE AUTHORS @MCMrARM @roadrunne
 Drone kernel build status:
 [![Build Status](https://cloud.drone.io/api/badges/marcosfad/mbp-ubuntu-kernel/status.svg)](https://cloud.drone.io/marcosfad/mbp-ubuntu-kernel)
 
+Travis kernel publish status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
+[![Build Status](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel.svg?branch=master)](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel)
+
 ## TODO
 
 ### Known issues

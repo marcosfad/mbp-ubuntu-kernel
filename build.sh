@@ -56,7 +56,7 @@ make olddefconfig
 make clean
 make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp
 
-#### Build src rpm
+#### Install
 #echo >&2 "===]> Info: Install kernel ... ";
 #make modules_install -j "$(getconf _NPROCESSORS_ONLN)"
 #make install -j `getconf _NPROCESSORS_ONLN`
