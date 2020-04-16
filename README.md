@@ -102,6 +102,7 @@ brcmfmac 0000:01:00.0 wlp1s0: renamed from wlan0
 
 - <https://wiki.ubuntu.com/KernelTeam/GitKernelBuild>
 - <https://help.ubuntu.com/community/Repositories/Personal>
+- <https://medium.com/sqooba/create-your-own-custom-and-authenticated-apt-repository-1e4a4cf0b864>
 
 ### Github
 
