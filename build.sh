@@ -55,14 +55,14 @@ cp ../template/default-config .config
 make olddefconfig
 make clean
 make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp
+make -j "$(getconf _NPROCESSORS_ONLN)" modules LOCALVERSION=-mbp
 
 #### Install
 #echo >&2 "===]> Info: Install kernel ... ";
 #make modules_install -j "$(getconf _NPROCESSORS_ONLN)"
-#make install -j `getconf _NPROCESSORS_ONLN`
+#make install -j "$(getconf _NPROCESSORS_ONLN)"
 
 #### Copy artifacts to shared volume
 echo >&2 "===]> Info: Copying debs and calculating SHA256 ... ";
 cp -rfv ../*.deb /tmp/artifacts/
 sha256sum ../*.deb > /tmp/artifacts/sha256
-
