@@ -1,5 +1,7 @@
 # mbp-ubuntu-kernel
 
+This repo is still a work in progress.
+
 Ubuntu/Mint/Debian kernel 5.6 with Apple T2 patches built-in (Macbooks produced >= 2018).
 
 Drivers:
@@ -19,74 +21,6 @@ Drone kernel build status:
 
 Travis kernel publish status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
 [![Build Status](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel.svg?branch=master)](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel)
-
-## TODO
-
-### Known issues
-
-- Dynamic audio input/output change (on connecting/disconnecting headphones jack)
-- TouchID - (@MCMrARM is working on it - https://github.com/Dunedan/mbp-2016-linux/issues/71#issuecomment-528545490)
-- Thunderbolt (is disabled, because driver was causing kernel panics (not tested with 5.5 kernel))
-- Microphone (it's recognised with new apple t2 sound driver, but there is a low mic volume amp)
-
-#### Working with upstream stable kernel 5.1
-
-- Display/Screen
-- USB-C
-- Battery/AC
-- Ethernet/Video USB-C adapters
-- Bluetooth
-
-#### Working with mbp-ubuntu-kernel
-
-- NVMe
-- Camera
-- keyboard
-- touchpad (scroll, right click)
-- wifi (not Macbook pro 16,1)
-  - you need to manually extract firmware from macOS
-    - <https://github.com/Dunedan/mbp-2016-linux/issues/71#issuecomment-517444300>
-    - <https://github.com/Dunedan/mbp-2016-linux/issues/71#issuecomment-515401480>
-  - or download it from <https://packages.aunali1.com/apple/wifi-fw/18G2022>
-
-> Firmware can be found by running `ioreg -l | grep C-4364` or `ioreg -l | grep RequestedFiles` under macOS
-
-```
-Put the firmware in the right place!
-The .trx file for your model goes to /lib/firmware/brcm/brcmfmac4364-pcie.bin,
-the .clmb goes to /lib/firmware/brcm/brcmfmac4364-pcie.clm_blob
-and the .txt to something like /lib/firmware/brcm/brcmfmac4364-pcie.Apple Inc.-MacBookPro15,2.txt
-```
-
-```
-# ls -l /lib/firmware/brcm | grep 4364
--rw-r--r--. 1 root root   12860 Mar  1 12:44 brcmfmac4364-pcie.Apple Inc.-MacBookPro15,2.txt
--rw-r--r--. 1 root root  922647 Mar  1 12:44 brcmfmac4364-pcie.bin
--rw-r--r--. 1 root root   33226 Mar  1 12:44 brcmfmac4364-pcie.clm_blob
-```
-
-```
-# dmesg
-brcmfmac 0000:01:00.0: enabling device (0000 -> 0002)
-brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac4364-pcie for chip BCM4364/3
-brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac4364-pcie for chip BCM4364/3
-brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4364/3 wl0: Mar 28 2019 19:17:52 version 9.137.9.0.32.6.34 FWID 01-36f56c94
-brcmfmac 0000:01:00.0 wlp1s0: renamed from wlan0
-```
-
-#### Working with external drivers
-
->> with @MCMrARM mbp2018-bridge-drv
-
-- keyboard
-- touchpad
-- touchbar
-- audio
-
-#### Not tested
-
-- eGPU
-- Thunderbolt
 
 ## Docs
 
