@@ -4,7 +4,9 @@ set -eu -o pipefail
 
 ## Update docker image tag, because kernel build is using `uname -r` when defining package version variable
 # KERNEL_VERSION=$(curl -s https://www.kernel.org | grep '<strong>' | head -3 | tail -1 | cut -d'>' -f3 | cut -d'<' -f1)
-KERNEL_VERSION=5.6.7
+KERNEL_VERSION=5.6.10
+#KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
+KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
 WORKING_PATH=/root/work
 KERNEL_PATH="${WORKING_PATH}/linux-kernel"
@@ -31,8 +33,8 @@ apt install -y build-essential fakeroot libncurses-dev bison flex libssl-dev lib
   bc rsync cpio dh-modaliases debhelper kernel-wedge curl
 
 ### get Kernel
-git clone --depth 1 --single-branch --branch v"${KERNEL_VERSION}" \
-  git://kernel.ubuntu.com/virgin/linux-stable.git "${KERNEL_PATH}"
+git clone --depth 1 --single-branch --branch "v${KERNEL_VERSION}" \
+  "${KERNEL_REPOSITORY}" "${KERNEL_PATH}"
 cd ./linux-kernel || exit
 
 #### Create patch file with custom drivers
@@ -52,13 +54,13 @@ while IFS= read -r file; do
   patch -p1 <"$file"
 done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | sort)
 
-echo >&2 "===]> Info: Add drivers default configuration... "
+#echo >&2 "===]> Info: Add drivers default configuration... "
 ### Add new drivers. This config files comes on the one of the patches...
-echo "CONFIG_APPLE_BCE_DRIVER=m" >>"${KERNEL_PATH}/debian.master/config/amd64/config.common.ubuntu"
-echo "CONFIG_APPLE_TOUCHBAR_DRIVER=m" >>"${KERNEL_PATH}/debian.master/config/amd64/config.common.ubuntu"
-find "${KERNEL_PATH}/debian.master/config/" -type f -name "generic.modules" -exec sh -c '
-  echo -e "apple-bce.ko\napple-ib-als.ko\napple-ib-tb.ko\napple-ibridge.ko" >> $1
-' sh {} \;
+#echo "CONFIG_APPLE_BCE_DRIVER=m" >>"${KERNEL_PATH}/debian.master/config/amd64/config.common.ubuntu"
+#echo "CONFIG_APPLE_TOUCHBAR_DRIVER=m" >>"${KERNEL_PATH}/debian.master/config/amd64/config.common.ubuntu"
+#find "${KERNEL_PATH}/debian.master/config/" -type f -name "generic.modules" -exec sh -c '
+#  echo -e "apple-bce.ko\napple-ib-als.ko\napple-ib-tb.ko\napple-ibridge.ko" >> $1
+#' sh {} \;
 
 chmod a+x "${KERNEL_PATH}"/debian/rules
 chmod a+x "${KERNEL_PATH}"/debian/scripts/*
