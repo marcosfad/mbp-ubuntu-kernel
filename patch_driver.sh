@@ -8,7 +8,7 @@ BUILD_PATH=/tmp/build-kernel
 # Patches
 APPLE_SMC_DRIVER_GIT_URL=https://github.com/aunali1/linux-mbp-arch
 APPLE_SMC_DRIVER_BRANCH_NAME=master
-APPLE_SMC_DRIVER_COMMIT_HASH=8cca9c0e0411708ee15eb77c00cc93297d1cd4ce
+APPLE_SMC_DRIVER_COMMIT_HASH=67a840b1cbe317f2f92b12cd167923beda863081
 ## BCE
 #APPLE_BCE_DRIVER_GIT_URL=https://github.com/aunali1/mbp2018-bridge-drv.git
 #APPLE_BCE_DRIVER_BRANCH_NAME=aur
@@ -31,7 +31,7 @@ git checkout ${APPLE_SMC_DRIVER_COMMIT_HASH}
 while IFS= read -r file; do
   echo "adding ${file}"
   cp -rfv "${file}" "${WORKING_PATH}"/patches/"${file##*/}"
-done < <(find "${BUILD_PATH}/linux-mbp-arch" -type f -name "*.patch" | sort)
+done < <(find "${BUILD_PATH}/linux-mbp-arch" -type f -name "*.patch" | grep -v "linux-mbp-arch/00" | sort)
 
 #### Add custom drivers to kernel
 #echo -e "From: \"Kernel Builder (sita)\" <ubuntu-kernel-bot@canonical.com>\nSubject: patch custom drivers\n" >"${WORKING_PATH}/patches/custom-drivers.patch"
