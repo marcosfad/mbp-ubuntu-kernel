@@ -103,7 +103,8 @@ awk -v data="hid-apple\nsnd-seq\napple-bce" '
 BEGIN {p=1}
 /### apple-bce start ###/ {print; print data;p=0}
 /### apple-bce end ###/ {p=1}
-p' /etc/initramfs-tools/modules > /etc/initramfs-tools/modules
+p' /etc/initramfs-tools/modules > /etc/initramfs-tools/modules.new
+mv -f /etc/initramfs-tools/modules.new /etc/initramfs-tools/modules
 else
 printf '\n### apple-bce start ###\nhid-apple\nsnd-seq\napple-bce\n### apple-bce end ###\n' >>/etc/initramfs-tools/modules
 fi
