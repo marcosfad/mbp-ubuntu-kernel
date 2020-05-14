@@ -701,7 +701,7 @@ CONFIG_GOOGLE_VPD=m
 #
 # EFI (Extensible Firmware Interface) Support
 #
-# CONFIG_EFI_VARS is not set
+CONFIG_EFI_VARS=y
 CONFIG_EFI_ESRT=y
 CONFIG_EFI_RUNTIME_MAP=y
 # CONFIG_EFI_FAKE_MEMMAP is not set

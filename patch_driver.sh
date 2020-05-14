@@ -8,7 +8,7 @@ BUILD_PATH=/tmp/build-kernel
 # Patches
 APPLE_SMC_DRIVER_GIT_URL=https://github.com/aunali1/linux-mbp-arch
 APPLE_SMC_DRIVER_BRANCH_NAME=master
-APPLE_SMC_DRIVER_COMMIT_HASH=8cca9c0e0411708ee15eb77c00cc93297d1cd4ce
+APPLE_SMC_DRIVER_COMMIT_HASH=a2401217c79e4c3c9a0b3e5e1c28e87a9986e314
 ## BCE
 #APPLE_BCE_DRIVER_GIT_URL=https://github.com/aunali1/mbp2018-bridge-drv.git
 #APPLE_BCE_DRIVER_BRANCH_NAME=aur
