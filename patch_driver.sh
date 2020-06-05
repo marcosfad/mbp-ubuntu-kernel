@@ -31,7 +31,7 @@ git checkout ${APPLE_SMC_DRIVER_COMMIT_HASH}
 while IFS= read -r file; do
   echo "==> Adding ${file}"
   cp -rfv "${file}" "${WORKING_PATH}"/patches/"${file##*/}"
-done < <(find "${BUILD_PATH}/linux-mbp-arch" -type f -name "*.patch" | grep -E '[235]00[0-9]' | sort)
+done < <(find "${BUILD_PATH}/linux-mbp-arch" -type f -name "*.patch" | grep -E '[35]00[0-9]' | sort)
 
 #### Add custom drivers to kernel
 #echo -e "From: \"Kernel Builder (sita)\" <ubuntu-kernel-bot@canonical.com>\nSubject: patch custom drivers\n" >"${WORKING_PATH}/patches/custom-drivers.patch"
