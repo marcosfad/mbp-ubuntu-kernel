@@ -4,7 +4,7 @@ set -eu -o pipefail
 
 ## Update docker image tag, because kernel build is using `uname -r` when defining package version variable
 # KERNEL_VERSION=$(curl -s https://www.kernel.org | grep '<strong>' | head -3 | tail -1 | cut -d'>' -f3 | cut -d'<' -f1)
-KERNEL_VERSION=5.6.19
+KERNEL_VERSION=5.7.4
 #KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
@@ -50,7 +50,7 @@ echo >&2 "===]> Info: Applying patches... "
   exit 1
 }
 while IFS= read -r file; do
-  echo "adding $file"
+  echo "==> Adding $file"
   patch -p1 <"$file"
 done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | sort)
 
