@@ -1,8 +1,6 @@
 # mbp-ubuntu-kernel
 
-This repo is still a work in progress.
-
-Ubuntu/Mint/Debian kernel 5.6 with Apple T2 patches built-in (Macbooks produced >= 2018).
+Ubuntu/Mint/Debian kernel 5.6+ with Apple T2 patches built-in. This repo try to keep up with kernel new releases. We release 2 alternative kernels: mbp for macbook pro 2018+ (16,1) and mbp-alt for older ones.
 
 Drivers:
 
@@ -12,7 +10,7 @@ Drivers:
 
 This project is closely inspired by mikeeq/mbp-fedora-kernel. Thank you @mikeeq for the scripts and setup.
 
-IF YOU ENJOY THIS CODE, CONSIDER CONTRIBUTING TO THE AUTHORS @MCMrARM @roadrunner2 @aunali1 @ppaulweber @mikeeq, they did all the hard work.
+IF YOU ENJOY THIS CODE, PLEASE CONSIDER CONTRIBUTING TO THE AUTHORS @MCMrARM @roadrunner2 @aunali1 @ppaulweber @mikeeq, they did all the hard work.
 
 ## CI status
 
@@ -21,6 +19,25 @@ Drone kernel build status:
 
 Travis kernel publish status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
 [![Build Status](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel.svg?branch=master)](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel)
+
+## INSTALLATION
+
+### The easy way
+
+Use the [mbp-ubuntu](https://github.com/marcosfad/mbp-ubuntu/releases) live cd to install ubuntu on your Mac
+
+### Manually
+
+Add the repo to your apt sources
+```bash
+echo "deb https://mbp-ubuntu-kernel.herokuapp.com/ /" >/etc/apt/sources.list.d/mbp-ubuntu-kernel.list
+curl -L https://mbp-ubuntu-kernel.herokuapp.com/KEY.gpg | apt-key add -
+apt-get update
+```
+Install the kernel using apt, for example kernel 5.7.9:
+```bash
+apt-get install linux-headers-5.7.9-mbp linux-image-5.7.9-mbp
+```
 
 ## Docs
 
@@ -58,6 +75,6 @@ Travis kernel publish status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
 - @MCMrARM - thanks for all RE work
 - @ozbenh - thanks for submitting NVME patch
 - @roadrunner2 - thanks for SPI (touchbar) driver
-- @aunali1 - thanks for ArchLinux Kernel CI
+- @aunali1 - thanks for ArchLinux Kernel CI and active support.
 - @ppaulweber - thanks for keyboard and Macbook Air patches
 - @mikeeq - thanks for the fedora kernel project and compilation scripts
