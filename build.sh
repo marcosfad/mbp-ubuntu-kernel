@@ -4,7 +4,7 @@ set -eu -o pipefail
 
 ## Update docker image tag, because kernel build is using `uname -r` when defining package version variable
 # KERNEL_VERSION=$(curl -s https://www.kernel.org | grep '<strong>' | head -3 | tail -1 | cut -d'>' -f3 | cut -d'<' -f1)
-KERNEL_VERSION=5.8.1
+KERNEL_VERSION=5.8.3
 #KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
@@ -87,24 +87,10 @@ echo "" >"${KERNEL_PATH}"/.scmversion
 # Build Deb packages
 make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp)"
 
-## Create alternative Kernel
-#echo >&2 "===]> Info: Create alternative kernel ... "
-#make distclean
-#make clean
-#while IFS= read -r file; do
-#  echo "==> Adding $file"
-#  patch -p1 <"$file"
-#done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep -E '[2]00[0-9]' | sort)
-#cp "${WORKING_PATH}/templates/default-config" "${KERNEL_PATH}/.config"
-#make olddefconfig
-#echo "" >"${KERNEL_PATH}"/.scmversion
-#
-## Build Deb packages
-#make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp-alt KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp-alt)"
-
 #### Copy artifacts to shared volume
 echo >&2 "===]> Info: Copying debs and calculating SHA256 ... "
 #cp -rfv ../*.deb "${REPO_PATH}/"
-#cp -rfv "${KERNEL_PATH}/.config" "${REPO_PATH}/kernel_config"
+cp -rfv "${KERNEL_PATH}/.config" "${REPO_PATH}/kernel_config_${KERNEL_VERSION}"
+cp -rfv "${KERNEL_PATH}/.config" "/tmp/artifacts/kernel_config_${KERNEL_VERSION}"
 cp -rfv ../*.deb /tmp/artifacts/
 sha256sum ../*.deb >/tmp/artifacts/sha256
