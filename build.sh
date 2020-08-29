@@ -68,7 +68,7 @@ echo >&2 "===]> Info: Applying patches... "
 while IFS= read -r file; do
   echo "==> Adding $file"
   patch -p1 <"$file"
-done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | sort)
+done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep -vE '[2]00[0-9]' | sort)
 
 chmod a+x "${KERNEL_PATH}"/debian/rules
 chmod a+x "${KERNEL_PATH}"/debian/scripts/*
@@ -85,12 +85,27 @@ make olddefconfig
 echo "" >"${KERNEL_PATH}"/.scmversion
 
 # Build Deb packages
-make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp)"
+make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp-alt)"
+
+# Create alternative Kernel
+echo >&2 "===]> Info: Create alternative kernel ... "
+make distclean
+make clean
+while IFS= read -r file; do
+  echo "==> Adding $file"
+  patch -p1 <"$file"
+done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep -E '[2]00[0-9]' | sort)
+cp "${WORKING_PATH}/templates/default-config" "${KERNEL_PATH}/.config"
+make olddefconfig
+echo "" >"${KERNEL_PATH}"/.scmversion
+
+# Build Deb packages
+make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp-alt KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp)"
 
 #### Copy artifacts to shared volume
 echo >&2 "===]> Info: Copying debs and calculating SHA256 ... "
 #cp -rfv ../*.deb "${REPO_PATH}/"
-cp -rfv "${KERNEL_PATH}/.config" "${REPO_PATH}/kernel_config_${KERNEL_VERSION}"
+#cp -rfv "${KERNEL_PATH}/.config" "${REPO_PATH}/kernel_config_${KERNEL_VERSION}"
 cp -rfv "${KERNEL_PATH}/.config" "/tmp/artifacts/kernel_config_${KERNEL_VERSION}"
 cp -rfv ../*.deb /tmp/artifacts/
 sha256sum ../*.deb >/tmp/artifacts/sha256
