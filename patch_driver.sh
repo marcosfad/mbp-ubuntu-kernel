@@ -6,9 +6,9 @@ BUILD_PATH=/tmp/build-kernel
 
 ### Apple T2 drivers commit hashes
 # Patches
-APPLE_SMC_DRIVER_GIT_URL=https://github.com/aunali1/linux-mbp-arch.git
-APPLE_SMC_DRIVER_BRANCH_NAME=master
-APPLE_SMC_DRIVER_COMMIT_HASH=bed9b2bf163e55921d56b41d054cd25e5da1fd2a
+APPLE_SMC_DRIVER_GIT_URL=https://github.com/marcosfad/linux-mbp-arch.git
+APPLE_SMC_DRIVER_BRANCH_NAME=release/5.9
+APPLE_SMC_DRIVER_COMMIT_HASH=01519664be9474c1cf5b92e37bd87a8d98283915
 ## BCE
 #APPLE_BCE_DRIVER_GIT_URL=https://github.com/aunali1/mbp2018-bridge-drv.git
 #APPLE_BCE_DRIVER_BRANCH_NAME=aur
