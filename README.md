@@ -2,11 +2,15 @@
 
 Ubuntu/Mint/Debian kernel 5.6+ with Apple T2 patches built-in. This repo try to keep up with kernel new releases.
 
-We release 2 alternative kernels: **"mbp"** which includes all patches from [https://github.com/aunali1/linux-mbp-arch](Aunali1's linux mbp arch) which should work in mostly everywhere and an alternative release (**"mbp-alt"**) which do not include the patch 2001 (drm amd display force link-rate).
+We release 2 alternative kernels: **"mbp"** which includes all patches from [Aunali1's linux mbp arch](https://github.com/aunali1/linux-mbp-arch) which should work in mostly everywhere and an alternative release (**"mbp-alt"**) which do not include the patch 2001 (drm amd display force link-rate).
 
 **!! Warning:** 
 
 Starting from the kernel 5.8 the release naming were switch with respect to kernel 5.7: Before the "mbp" release did not include all the patches. **Now the "mbp" includes all patches** and the "mbp-alt" don't.
+
+**!! Warning:**
+
+It seems, that the kernel 5.8 is not working as smooth as the 5.7 branch. If you experience problems while installing or running the linux in your mbp, try using an older Kernel.
 
 **Drivers included:**
 
