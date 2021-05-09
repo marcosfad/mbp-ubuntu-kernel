@@ -52,7 +52,7 @@ apt-get install linux-headers-5.7.9-mbp linux-image-5.7.9-mbp
 ## Docs
 
 - Discord: <https://discord.gg/Uw56rqW>
-- WiFi firmware: <https://packages.aunali1.com/apple/wifi-fw/18G2022>
+- WiFi guide: <https://wiki.t2linux.org/guides/wifi/>
 - blog `Installing Fedora 31 on a 2018 Mac mini`: <https://linuxwit.ch/blog/2020/01/installing-fedora-on-mac-mini/>
 - iwd:
   - <https://iwd.wiki.kernel.org/networkconfigurationsettings>
