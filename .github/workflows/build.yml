@@ -26,8 +26,8 @@ jobs:
         run: |
           ./build.sh
           
-    - name: Upload package
-      uses: actions/upload-artifact@v2
-      with:
-        name: mbp-16.1-linux-wifi
-        path: /tmp/artifacts/*
+      - name: Upload package
+        uses: actions/upload-artifact@v2
+        with:
+          name: mbp-16.1-linux-wifi
+          path: /tmp/artifacts/*
