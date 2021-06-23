@@ -6,7 +6,7 @@ BUILD_PATH=/tmp/build-kernel
 
 ### Apple T2 drivers commit hashes
 # Patches
-APPLE_SMC_DRIVER_GIT_URL=https://github.com/jamlam/mbp-16.1-linux-wifi/blob/main/PKGBUILD
+APPLE_SMC_DRIVER_GIT_URL=https://github.com/jamlam/mbp-16.1-linux-wifi.git
 APPLE_SMC_DRIVER_BRANCH_NAME=main
 APPLE_SMC_DRIVER_COMMIT_HASH=bb8e7d0d00eb1f9142233a92285d43d1a01e7fe9
 ## BCE
