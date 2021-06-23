@@ -24,7 +24,7 @@ jobs:
 
       - name: Build script
         run: |
-          ./build.sh
+          sudo ./build.sh
           
       - name: Upload package
         uses: actions/upload-artifact@v2
