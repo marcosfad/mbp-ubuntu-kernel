@@ -24,6 +24,7 @@ jobs:
 
       - name: Build script
         run: |
+          mkdir /tmp/artifacts
           sudo ./build.sh
           
       - name: Upload package
