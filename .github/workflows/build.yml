@@ -26,7 +26,7 @@ jobs:
         id: build
         run: |
           mkdir /tmp/artifacts
-          VERSION=$(grep "KERNEL_VERSION=\d*\.\d*\.\d*" build.sh | cut -d = -f2)
+          VERSION=$(grep ^KERNEL_VERSION build.sh | head -n1| cut -d = -f2)
           REL=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
           #REL=$( git tag |grep -F $VERSION|sort -r|head -n1|tr -d v)
           echo Building $VERSION-$REL
