@@ -23,12 +23,35 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build script
+        id: build
         run: |
           mkdir /tmp/artifacts
+          VERSION=$(grep "KERNEL_VERSION=\d*\.\d*\.\d*" build.sh | cut -d = -f2)
+          REL=$(grep "PKGREL=\d*" build.sh | cut -d = -f2)
+          #REL=$( git tag |grep -F $VERSION|sort -r|head -n1|tr -d v)
+          echo Building $VERSION-$REL
+          echo "::set-output name=tag::${VERSION}-${REL}"
           sudo ./build.sh
+          cd /tmp/artifacts
+          ls -l
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          ls -l
           
-      - name: Upload package
+      - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: mbp-16.1-linux-wifi
+          name: linux-mbp-16X-wifi-${{ steps.build.outputs.tag }}
           path: /tmp/artifacts/*
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            /tmp/artifacts/Packages.gz
+            /tmp/artifacts/sha256
+            /tmp/artifacts/*.deb
+          tag_name: v${{ steps.build.outputs.tag }}
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

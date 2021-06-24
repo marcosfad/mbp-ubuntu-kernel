@@ -5,6 +5,7 @@ set -eu -o pipefail
 ## Update docker image tag, because kernel build is using `uname -r` when defining package version variable
 # KERNEL_VERSION=$(curl -s https://www.kernel.org | grep '<strong>' | head -3 | tail -1 | cut -d'>' -f3 | cut -d'<' -f1)
 KERNEL_VERSION=5.12.8
+PKGREL=2
 #KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
@@ -19,17 +20,18 @@ echo "CPU threads: $(nproc --all)"
 grep 'model name' /proc/cpuinfo | uniq
 
 get_next_version () {
-  curl -s https://mbp-ubuntu-kernel.herokuapp.com/ -L | grep "linux-image-${KERNEL_VERSION}-${1}" > /dev/null
-  OLD_BUILD_EXIST=$?
-  if test $OLD_BUILD_EXIST -eq 0
-  then
-    LATEST_BUILD=$(curl -s https://mbp-ubuntu-kernel.herokuapp.com/ -L | grep "linux-image-${KERNEL_VERSION}-${1}" |
-      grep a | cut -d'>' -f2 | cut -d'<' -f1 |
-      sort -r | head -n 1 | cut -d'-' -f6 | cut -d'_' -f1)
-  else
-    LATEST_BUILD=0
-  fi
-  echo "$((LATEST_BUILD+1))"
+  echo $PKGREL
+  #curl -s https://mbp-ubuntu-kernel.herokuapp.com/ -L | grep "linux-image-${KERNEL_VERSION}-${1}" > /dev/null
+  #OLD_BUILD_EXIST=$?
+  #if test $OLD_BUILD_EXIST -eq 0
+  #then
+  #  LATEST_BUILD=$(curl -s https://mbp-ubuntu-kernel.herokuapp.com/ -L | grep "linux-image-${KERNEL_VERSION}-${1}" |
+  #    grep a | cut -d'>' -f2 | cut -d'<' -f1 |
+  #    sort -r | head -n 1 | cut -d'-' -f6 | cut -d'_' -f1)
+  #else
+  #  LATEST_BUILD=0
+  #fi
+  #echo "$((LATEST_BUILD+1))"
 }
 
 ### Clean up
@@ -68,7 +70,7 @@ echo >&2 "===]> Info: Applying patches... "
 while IFS= read -r file; do
   echo "==> Adding $file"
   patch -p1 <"$file"
-done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep -vE '[2]00[0-9]' | sort)
+done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | sort)
 
 chmod a+x "${KERNEL_PATH}"/debian/rules
 chmod a+x "${KERNEL_PATH}"/debian/scripts/*
@@ -85,22 +87,7 @@ make olddefconfig
 echo "" >"${KERNEL_PATH}"/.scmversion
 
 # Build Deb packages
-make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp-alt)"
-
-# Create alternative Kernel
-echo >&2 "===]> Info: Create alternative kernel ... "
-make distclean
-make clean
-while IFS= read -r file; do
-  echo "==> Adding $file"
-  patch -p1 <"$file"
-done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep -E '[2]00[0-9]' | sort)
-cp "${WORKING_PATH}/templates/default-config" "${KERNEL_PATH}/.config"
-make olddefconfig
-echo "" >"${KERNEL_PATH}"/.scmversion
-
-# Build Deb packages
-make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp-alt KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp)"
+make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp-16X-wifi KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version)"
 
 #### Copy artifacts to shared volume
 echo >&2 "===]> Info: Copying debs and calculating SHA256 ... "
