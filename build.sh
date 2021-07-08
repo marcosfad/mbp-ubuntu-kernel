@@ -77,6 +77,20 @@ echo "" >"${KERNEL_PATH}"/.scmversion
 # Build Deb packages
 make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="${KERNEL_VERSION}-$(get_next_version mbp)"
 
+# build alternate kernel with corellium's wifi patches, for MBP16,1/2/4 and MBA9,1
+
+# reverse other wifi patches
+while IFS= read -r file; do
+  echo "==> Reverting $file"
+  patch -R -p1 <"$file"
+done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep "brcmfmac" | sort)
+
+echo "==> Adding wifi-bigsur.patch"
+curl https://raw.githubusercontent.com/jamlam/mbp-16.1-linux-wifi/4c8b393ed7a874e3d9e44a2a467c1b7c74af1260/wifi-bigsur.patch \
+| patch -p1
+
+make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp-16x-wifi KDEB_PKGVERSION="${KERNEL_VERSION}-$(get_next_version mbp)"
+
 #### Copy artifacts to shared volume
 echo >&2 "===]> Info: Copying debs and calculating SHA256 ... "
 cp -rfv "${KERNEL_PATH}/.config" "/tmp/artifacts/kernel_config_${KERNEL_VERSION}"
