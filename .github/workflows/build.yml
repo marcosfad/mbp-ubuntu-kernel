@@ -24,6 +24,7 @@ jobs:
           shellcheck ./*.sh
 
   build:
+    needs: [lint]
     runs-on: ubuntu-20.04
     steps:
       - name: 'Checkout Repo'
