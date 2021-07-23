@@ -1,0 +1,23 @@
+---
+name: Publish APT Repo
+
+# yamllint disable-line rule:truthy
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: Publish
+        run: |
+          sudo ./publish.sh
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          GPG_PASS: ${{ secrets.GPG_PASS }}
+          GPG_KEY: ${{ secrets.GPG_KEY }}
