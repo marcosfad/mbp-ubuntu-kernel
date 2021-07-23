@@ -9,14 +9,7 @@ BUILD_PATH=/tmp/build-kernel
 APPLE_SMC_DRIVER_GIT_URL=https://github.com/aunali1/linux-mbp-arch.git
 APPLE_SMC_DRIVER_BRANCH_NAME=master
 APPLE_SMC_DRIVER_COMMIT_HASH=1faa37d704798bc04104a88f620e4f55b3466de0
-## BCE
-#APPLE_BCE_DRIVER_GIT_URL=https://github.com/aunali1/mbp2018-bridge-drv.git
-#APPLE_BCE_DRIVER_BRANCH_NAME=aur
-#APPLE_BCE_DRIVER_COMMIT_HASH=c884d9ca731f2118a58c28bb78202a0007935998
-## SPI
-#APPLE_IB_DRIVER_GIT_URL=https://github.com/roadrunner2/macbook12-spi-driver.git
-#APPLE_IB_DRIVER_BRANCH_NAME=mbp15
-#APPLE_IB_DRIVER_COMMIT_HASH=90cea3e8e32db60147df8d39836bd1d2a5161871
+
 
 rm -rf "${BUILD_PATH}"
 mkdir -p "${BUILD_PATH}"
@@ -31,45 +24,4 @@ git checkout ${APPLE_SMC_DRIVER_COMMIT_HASH}
 while IFS= read -r file; do
   echo "==> Adding ${file}"
   cp -rfv "${file}" "${WORKING_PATH}"/patches/"${file##*/}"
-done < <(find "${BUILD_PATH}/linux-mbp-arch" -type f -name "*.patch" | grep -vE '000[0-9]' | sort)
-
-#### Add custom drivers to kernel
-#echo -e "From: \"Kernel Builder (sita)\" <ubuntu-kernel-bot@canonical.com>\nSubject: patch custom drivers\n" >"${WORKING_PATH}/patches/custom-drivers.patch"
-#
-#git clone --depth 1 --single-branch --branch v"${KERNEL_VERSION}" \
-#  git://kernel.ubuntu.com/virgin/linux-stable.git "${BUILD_PATH}/linux-stable"
-#cd "${BUILD_PATH}/linux-stable/drivers" || exit
-#
-#### apple-bce
-#git clone --depth 1 --single-branch --branch "${APPLE_BCE_DRIVER_BRANCH_NAME}" \
-#  "${APPLE_BCE_DRIVER_GIT_URL}" "${BUILD_PATH}/linux-stable/drivers/apple-bce"
-#cd "${BUILD_PATH}/linux-stable/drivers/apple-bce" || exit
-#git checkout "${APPLE_BCE_DRIVER_COMMIT_HASH}" && rm -rf .git
-#
-#cd "${BUILD_PATH}/linux-stable/drivers"
-#cp -rfv "${WORKING_PATH}/templates/Kconfig" "${BUILD_PATH}/linux-stable/drivers/apple-bce/Kconfig"
-#sed -i "s/TEST_DRIVER/APPLE_BCE_DRIVER/g" "${BUILD_PATH}/linux-stable/drivers/apple-bce/Kconfig"
-## shellcheck disable=SC2016
-#sed -i 's/obj-m/obj-$(CONFIG_APPLE_BCE)/g' "${BUILD_PATH}/linux-stable/drivers/apple-bce/Makefile"
-## shellcheck disable=SC2016
-#echo 'obj-$(CONFIG_APPLE_BCE)           += apple-bce/' >>"${BUILD_PATH}/linux-stable/drivers/Makefile"
-#sed -i "\$i source \"drivers/apple-bce/Kconfig\"\n" "${BUILD_PATH}/linux-stable/drivers/Kconfig"
-#
-#### apple-ib
-#git clone --single-branch --branch "${APPLE_IB_DRIVER_BRANCH_NAME}" \
-#  "${APPLE_IB_DRIVER_GIT_URL}" "${BUILD_PATH}/linux-stable/drivers/apple-touchbar"
-#cd "${BUILD_PATH}/linux-stable/drivers/apple-touchbar" || exit
-#git checkout "${APPLE_IB_DRIVER_COMMIT_HASH}" && rm -rf .git
-#
-#cd "${BUILD_PATH}/linux-stable/drivers"
-#cp -rfv "${WORKING_PATH}/templates/Kconfig" "${BUILD_PATH}/linux-stable/drivers/apple-touchbar/Kconfig"
-#sed -i "s/TEST_DRIVER/APPLE_TOUCHBAR_DRIVER/g" "${BUILD_PATH}/linux-stable/drivers/apple-touchbar/Kconfig"
-## shellcheck disable=SC2016
-#sed -i 's/obj-m/obj-$(CONFIG_APPLE_TOUCHBAR)/g' "${BUILD_PATH}/linux-stable/drivers/apple-touchbar/Makefile"
-## shellcheck disable=SC2016
-#echo 'obj-$(CONFIG_APPLE_TOUCHBAR)      += apple-touchbar/' >>"${BUILD_PATH}/linux-stable/drivers/Makefile"
-#sed -i "\$i source \"drivers/apple-touchbar/Kconfig\"\n" "${BUILD_PATH}/linux-stable/drivers/Kconfig"
-#
-### Prepare patch
-#git add .
-#git diff HEAD >> "${WORKING_PATH}/patches/custom-drivers.patch"
+done < <(find "${BUILD_PATH}/linux-mbp-arch" -type f -name "*.patch" | sort)

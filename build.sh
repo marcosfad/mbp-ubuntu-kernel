@@ -2,10 +2,7 @@
 
 set -eu -o pipefail
 
-## Update docker image tag, because kernel build is using `uname -r` when defining package version variable
-# KERNEL_VERSION=$(curl -s https://www.kernel.org | grep '<strong>' | head -3 | tail -1 | cut -d'>' -f3 | cut -d'<' -f1)
-KERNEL_VERSION=5.10.47
-#KERNEL_REPOSITORY=git://kernel.ubuntu.com/virgin/linux-stable.git
+KERNEL_VERSION=5.10.52
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
 WORKING_PATH=/root/work
@@ -75,7 +72,7 @@ make olddefconfig
 echo "" >"${KERNEL_PATH}"/.scmversion
 
 # Build Deb packages
-make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="${KERNEL_VERSION}-$(get_next_version mbp)"
+make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp)"
 
 # build alternate kernel with corellium's wifi patches, for MBP16,1/2/4 and MBA9,1
 echo >&2 "===]> Info: Create alternative kernel with corellium wifi patch... "
