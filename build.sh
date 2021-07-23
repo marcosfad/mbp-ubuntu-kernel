@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-KERNEL_VERSION=5.10.52
+KERNEL_VERSION=5.12.15
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
 WORKING_PATH=/root/work
