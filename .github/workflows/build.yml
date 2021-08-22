@@ -56,7 +56,7 @@ jobs:
           github.ref == 'release/*'
         uses: softprops/action-gh-release@v1
         with:
-          files: |
+          data: |
             /tmp/artifacts/Packages.gz
             /tmp/artifacts/sha256
             /tmp/artifacts/*.deb
