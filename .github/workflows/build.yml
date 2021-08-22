@@ -61,6 +61,6 @@ jobs:
             /tmp/artifacts/sha256
             /tmp/artifacts/*.deb
           tag_name: v${{ steps.build.outputs.tag }}
-          draft: true
+          draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
