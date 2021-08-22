@@ -2,11 +2,11 @@
 
 Ubuntu/Mint/Debian kernel 5.6+ with Apple T2 patches built-in. This repo try to keep up with kernel new releases.
 
-We release 2 alternative kernels: **"mbp"** which includes all patches from [Aunali1's linux mbp arch](https://github.com/aunali1/linux-mbp-arch) which should work in mostly everywhere and an alternative release (**"mbp-alt"**) which do not include the patch 2001 (drm amd display force link-rate).
+We release 2 alternative kernels: **"mbp"** which includes all patches from [Aunali1's linux mbp arch](https://github.com/aunali1/linux-mbp-arch) which should work in mostly everywhere and an alternative release (**"mbp-16x-wifi"**) which includes all patches from [Jamlam's mbp-16.1-linux-wifi](https://github.com/jamlam/mbp-16.1-linux-wifi) which should allow you to use the internal wifi on Macs that came with BigSur pre-installed.
 
-**!! Warning:** 
+**!! Note for kernel 5.7:** 
 
-Starting from the kernel 5.8 the release naming were switch with respect to kernel 5.7: Before the "mbp" release did not include all the patches. **Now the "mbp" includes all patches** and the "mbp-alt" don't.
+The releases of the kernel 5.7: The "mbp" release did not include the patch 2001 (drm amd display force link-rate) of Aunali's. The mbp-alt included all patches**.
 
 **!! Warning:**
 
@@ -24,10 +24,10 @@ This project is closely inspired by mikeeq/mbp-fedora-kernel. Thank you @mikeeq 
 
 ## CI status
 
-Drone kernel build status:
-[![Build Status](https://cloud.drone.io/api/badges/marcosfad/mbp-ubuntu-kernel/status.svg)](https://cloud.drone.io/marcosfad/mbp-ubuntu-kernel)
+Build status:
+[![Build Kernel Package](https://github.com/marcosfad/mbp-ubuntu-kernel/actions/workflows/build.yml/badge.svg?branch=release%2F5.10)](https://github.com/marcosfad/mbp-ubuntu-kernel/actions/workflows/build.yml)
 
-Travis kernel publish status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
+Travis kernel publish to repository status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
 [![Build Status](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel.svg?branch=master)](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel)
 
 ## INSTALLATION
@@ -44,9 +44,9 @@ echo "deb https://mbp-ubuntu-kernel.herokuapp.com/ /" >/etc/apt/sources.list.d/m
 curl -L https://mbp-ubuntu-kernel.herokuapp.com/KEY.gpg | apt-key add -
 apt-get update
 ```
-Install the kernel using apt, for example kernel 5.7.9:
+Install the kernel using apt, for example kernel 5.10.47:
 ```bash
-apt-get install linux-headers-5.7.9-mbp linux-image-5.7.9-mbp
+apt-get install linux-headers-5.10.47-mbp linux-image-5.10.17-mbp
 ```
 
 ## Docs

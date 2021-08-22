@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-KERNEL_VERSION=5.10.52
+KERNEL_VERSION=5.10.60
 KERNEL_REPOSITORY=https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
 REPO_PATH=$(pwd)
 WORKING_PATH=/root/work
@@ -85,7 +85,7 @@ while IFS= read -r file; do
 done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep "brcmfmac" | sort -r)
 
 echo "==> Adding wifi-bigsur.patch"
-curl https://raw.githubusercontent.com/jamlam/mbp-16.1-linux-wifi/4c8b393ed7a874e3d9e44a2a467c1b7c74af1260/wifi-bigsur.patch \
+curl https://raw.githubusercontent.com/jamlam/mbp-16.1-linux-wifi/c20aa04314fe0a9c5ad0d2f9ac54a2edbe5d7e32/8001-corellium-wifi-bigsur.patch \
 | patch -p1
 cp "${WORKING_PATH}/templates/default-config" "${KERNEL_PATH}/.config"
 make olddefconfig
