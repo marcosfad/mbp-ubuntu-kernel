@@ -74,19 +74,24 @@ echo "" >"${KERNEL_PATH}"/.scmversion
 # Build Deb packages
 make -j "$(getconf _NPROCESSORS_ONLN)" deb-pkg LOCALVERSION=-mbp KDEB_PKGVERSION="$(make kernelversion)-$(get_next_version mbp)"
 
-# build alternate kernel with corellium's wifi patches, for MBP16,1/2/4 and MBA9,1
+# build alternate kernel with corellium's wifi patches, for MBP16,1/2/3/4 and MBA9,1
 echo >&2 "===]> Info: Create alternative kernel with corellium wifi patch... "
 make distclean
 make clean
+
 # reverse other wifi patches
 while IFS= read -r file; do
   echo "==> Reverting $file"
   patch -R -p1 <"$file"
 done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch" | grep "brcmfmac" | sort -r)
 
-echo "==> Adding wifi-bigsur.patch"
-curl https://raw.githubusercontent.com/jamlam/mbp-16.1-linux-wifi/c20aa04314fe0a9c5ad0d2f9ac54a2edbe5d7e32/8001-corellium-wifi-bigsur.patch \
-| patch -p1
+echo "==> Adding alt wifi patches"
+
+while IFS= read -r file; do
+  echo "==> Adding $file"
+  patch -p1 <"$file"
+done < <(find "${WORKING_PATH}/patches" -type f -name "*.patch.alt_wifi_only" | sort)
+
 cp "${WORKING_PATH}/templates/default-config" "${KERNEL_PATH}/.config"
 make olddefconfig
 echo "" >"${KERNEL_PATH}"/.scmversion
