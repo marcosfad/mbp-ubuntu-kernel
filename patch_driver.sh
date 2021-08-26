@@ -40,5 +40,5 @@ git checkout ${ALT_WIFI_DRIVER_COMMIT_HASH}
 
 while IFS= read -r file; do
   echo "==> Adding ${file}.alt_wifi_only"
-  cp -rfv "${file}" "${WORKING_PATH}"/patches/"${file##*/}.alt_wifi_only"
+  cp -rfv "${file}" "${WORKING_PATH}"/patches/"${file##*/}".alt_wifi_only
 done < <(find "${BUILD_PATH}/mbp-16.1-linux-wifi" -type f -name "8*.patch" | sort)
