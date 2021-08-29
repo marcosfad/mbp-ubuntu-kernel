@@ -53,7 +53,7 @@ docker run \
       --releasePath=/repo/.build/t2-aunali1-patched \
 "
 # jamlam
-VERSION=$(ubuntu-mainline-kernel.sh -r v5.12 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
+VERSION=$(ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
 docker run \
   -t \
   --rm \
@@ -114,7 +114,7 @@ docker run \
       --patchset1Repo='git://github.com/AdityaGarg8/5.10-patches.git' \
       --patchset1Branch=main \
       --patchset1Commit=1544718ff8282e75bbade89faebcb3ac45e5434a \
-      --patchset1Filter=\"grep -vE '0001'\" \
+      --patchset1Filter=\"grep -vE '000[0-9]'\" \
       --releaseSuffix=t2-hwe \
       --releasePath=/repo/.build/t2-hwe \
 "
