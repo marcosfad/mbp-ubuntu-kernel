@@ -54,7 +54,7 @@ jobs:
              --patchset1Repo="git://github.com/AdityaGarg8/5.10-patches.git" \
              --patchset1Branch=main \
              --patchset1Commit=c7507079923dbae525af591d0a680e6960ce769c \
-             --patchset1Filter="grep -vE '0001'" \
+             --patchset1Filter="grep -vE 0001" \
              --releaseSuffix=t2-hwe \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -135,7 +135,7 @@ jobs:
              --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
              --patchset1Branch=main \
              --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset1Filter="grep -vE '0001'" \
+             --patchset1Filter="grep -vE 0001" \
              --releaseSuffix=t2-hwe-next \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts

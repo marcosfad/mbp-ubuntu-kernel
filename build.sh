@@ -89,7 +89,7 @@ get_next_version() {
 ### Clean up
 rm -rfv ./*.deb
 rm -rf "${KERNEL_PATH}"
-rm -rf "${PATCHES_PATH}"
+rm -rf "${PATCHES_PATH}" "${PATCHSET_1_GIT_PATH}" "${PATCHSET_2_GIT_PATH}"
 rm -rf "${RELEASE_PATH}"
 
 mkdir -p "${WORKING_PATH}" && cd "${WORKING_PATH}"

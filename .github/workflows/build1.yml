@@ -56,7 +56,7 @@ jobs:
              --patchset1Repo="git://github.com/aunali1/linux-mbp-arch.git" \
              --patchset1Branch=master \
              --patchset1Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
-             --patchset1Filter="grep -vE '000[0-9]'" \
+             --patchset1Filter="grep -vE 000[0-9]" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -138,11 +138,11 @@ jobs:
              --patchset1Repo="git://github.com/aunali1/linux-mbp-arch.git" \
              --patchset1Branch=master \
              --patchset1Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
-             --patchset1Filter="grep -vE '000[0-9]'" \
+             --patchset1Filter="grep -vE 000[0-9]" \
              --patchset2Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
              --patchset2Branch=main \
              --patchset2Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset2Filter="grep -E '8001'" \
+             --patchset2Filter="grep -E 8001" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
