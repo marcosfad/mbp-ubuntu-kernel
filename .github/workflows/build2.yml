@@ -50,7 +50,7 @@ jobs:
           rm -rf /tmp/artifacts
           mkdir /tmp/artifacts
           echo Building ${{ steps.variables.outputs.tag }}
-          ./build.sh \
+          sudo ./build.sh \
              --kernel=${{ steps.variables.outputs.version }} \
              --kernelBranch="v${{ steps.variables.outputs.version }}" \
              --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
@@ -60,6 +60,7 @@ jobs:
              --patchset1Filter="grep -vE '0001|800[0-9]'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
@@ -132,7 +133,7 @@ jobs:
           rm -rf /tmp/artifacts
           mkdir /tmp/artifacts
           echo Building ${{ steps.variables.outputs.tag }}
-          ./build.sh \
+          sudo ./build.sh \
              --kernel=${{ steps.variables.outputs.version }} \
              --kernelBranch="v${{ steps.variables.outputs.version }}" \
              --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
@@ -146,6 +147,7 @@ jobs:
              --patchset2Filter="grep -E 'brcmfmac'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz

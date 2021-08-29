@@ -46,7 +46,7 @@ jobs:
           rm -rf /tmp/artifacts
           mkdir /tmp/artifacts
           echo Building ${{ steps.variables.outputs.tag }}
-          ./build.sh \
+          sudo ./build.sh \
             --kernel=${{ steps.variables.outputs.version }} \
              --kernelBranch="hwe-5.11" \
              --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
@@ -57,6 +57,7 @@ jobs:
              --patchset1Filter="grep -vE '0001'" \
              --releaseSuffix=t2-hwe \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
