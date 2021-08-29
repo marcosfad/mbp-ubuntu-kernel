@@ -142,8 +142,8 @@ jobs:
              --patchset1Filter="grep -vE 000[0-9]" \
              --patchset2Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
              --patchset2Branch=main \
-             --patchset2Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset2Filter="grep -E 8001" \
+             --patchset2Commit=4c8b393ed7a874e3d9e44a2a467c1b7c74af1260 \
+             --patchset2Filter="grep -E wifi-bigsur" \
              --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts

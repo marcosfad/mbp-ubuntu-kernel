@@ -48,7 +48,7 @@ jobs:
           echo Building ${{ steps.variables.outputs.tag }}
           sudo ./build.sh \
             --kernel=${{ steps.variables.outputs.version }} \
-             --kernelBranch="Ubuntu-hwe-5.11-5.11.0-34.36_20.04.1" \
+             --kernelBranch="hwe-5.11" \
              --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
              --debianSaucePatches=no \
              --patchset1Repo="git://github.com/AdityaGarg8/5.10-patches.git" \
@@ -129,7 +129,7 @@ jobs:
           echo Building ${{ steps.variables.outputs.tag }}
           sudo ./build.sh \
             --kernel=${{ steps.variables.outputs.version }} \
-             --kernelBranch="Ubuntu-hwe-5.13-5.13.0-14.14_20.04.2" \
+             --kernelBranch="hwe-5.13" \
              --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
              --debianSaucePatches=no \
              --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
