@@ -34,7 +34,7 @@ jobs:
         id: variables
         run: |
           VERSION=5.11.0
-          RELEASE_SUFFIX=t2
+          RELEASE_SUFFIX=t2-hwe
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
@@ -48,13 +48,13 @@ jobs:
           echo Building ${{ steps.variables.outputs.tag }}
           sudo ./build.sh \
             --kernel=${{ steps.variables.outputs.version }} \
-             --kernelBranch="hwe-5.11" \
+             --kernelBranch="Ubuntu-hwe-5.11-5.11.0-34.36_20.04.1" \
              --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
              --debianSaucePatches=no \
              --patchset1Repo="git://github.com/AdityaGarg8/5.10-patches.git" \
              --patchset1Branch=main \
-             --patchset1Commit=1544718ff8282e75bbade89faebcb3ac45e5434a \
-             --patchset1Filter="grep -vE '000[0-9]'" \
+             --patchset1Commit=c7507079923dbae525af591d0a680e6960ce769c \
+             --patchset1Filter="grep -vE '0001'" \
              --releaseSuffix=t2-hwe \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -66,7 +66,6 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: linux-mbp-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release
@@ -79,6 +78,87 @@ jobs:
             Ubuntu HWE
             Patchsets:
               https://github.com/AdityaGarg8/5.10-patches
+          files: |
+            /tmp/artifacts/Packages.gz
+            /tmp/artifacts/sha256
+            /tmp/artifacts/*.deb
+          tag_name: v${{ steps.variables.outputs.tag }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Kernel
+        if: |
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/')
+        run: |
+          PAYLOAD='{"request": {"branch":"master","sha":"9c060e2ebc7564921e28632232131e1dd80ce679"}}'
+          curl -sSf -X POST \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            -H "Travis-API-Version: 3" \
+            -H "Authorization: token ${TRAVIS_TOKEN}" \
+            -d "{\"request\": {${PAYLOAD}}}" \
+            https://api.travis-ci.com/repo/marcosfad%2Fmbp-ubuntu-kernel/requests
+        env:
+          TRAVIS_TOKEN: ${{ secrets.TRAVIS_TOKEN }}
+
+  build-hwe-next:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: find latest release
+        id: variables
+        run: |
+          VERSION=5.13.0
+          RELEASE_SUFFIX=t2-hwe-next
+          REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
+          echo "::set-output name=tag::${VERSION}-${RELEASE_SUFFIX}-${REL}"
+
+      - name: Build script
+        id: build
+        run: |
+          rm -rf /tmp/artifacts
+          mkdir /tmp/artifacts
+          echo Building ${{ steps.variables.outputs.tag }}
+          sudo ./build.sh \
+            --kernel=${{ steps.variables.outputs.version }} \
+             --kernelBranch="Ubuntu-hwe-5.13-5.13.0-14.14_20.04.2" \
+             --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
+             --debianSaucePatches=no \
+             --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
+             --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
+             --patchset1Branch=main \
+             --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
+             --patchset1Filter="grep -vE '0001'" \
+             --releaseSuffix=t2-hwe-next \
+             --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
+          cd /tmp/artifacts
+          ls -l
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          ls -l
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: /tmp/artifacts/*
+
+      - name: Release
+        if: |
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/')
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            Ubuntu HWE Next
+            Patchsets:
+              https://github.com/jamlam/mbp-16.1-linux-wifi
           files: |
             /tmp/artifacts/Packages.gz
             /tmp/artifacts/sha256

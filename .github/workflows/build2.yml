@@ -57,7 +57,7 @@ jobs:
              --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
              --patchset1Branch=main \
              --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset1Filter="grep -vE '0001|800[0-9]'" \
+             --patchset1Filter="grep -vE '0001'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -69,7 +69,6 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: linux-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release
@@ -156,7 +155,6 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: linux-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release

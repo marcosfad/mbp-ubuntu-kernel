@@ -68,7 +68,6 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: linux-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release
@@ -155,7 +154,6 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: linux-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release
