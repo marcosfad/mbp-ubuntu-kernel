@@ -58,7 +58,7 @@ jobs:
              --patchset1Branch=main \
              --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
              --patchset1Filter="grep -vE 0001" \
-             --releaseSuffix=${{ steps.variables.outputs.version }} \
+             --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
@@ -69,6 +69,7 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
+          name: linux-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release
@@ -144,7 +145,7 @@ jobs:
              --patchset2Branch=master \
              --patchset2Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
              --patchset2Filter="grep -E brcmfmac" \
-             --releaseSuffix=${{ steps.variables.outputs.version }} \
+             --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
@@ -155,6 +156,7 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v2
         with:
+          name: linux-${{ steps.variables.outputs.tag }}
           path: /tmp/artifacts/*
 
       - name: Release
