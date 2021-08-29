@@ -59,6 +59,7 @@ jobs:
              --patchset1Filter="grep -vE '000[0-9]'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
@@ -145,6 +146,7 @@ jobs:
              --patchset2Filter="grep -E '8001'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz

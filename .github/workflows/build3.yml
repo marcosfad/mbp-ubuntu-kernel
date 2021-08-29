@@ -57,6 +57,7 @@ jobs:
              --patchset1Filter="grep -vE '0001'" \
              --releaseSuffix=t2-hwe \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz

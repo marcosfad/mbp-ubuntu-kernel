@@ -60,6 +60,7 @@ jobs:
              --patchset1Filter="grep -vE '0001|800[0-9]'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
@@ -146,6 +147,7 @@ jobs:
              --patchset2Filter="grep -E 'brcmfmac'" \
              --releaseSuffix=${{ steps.variables.outputs.version }} \
              --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
           cd /tmp/artifacts
           ls -l
           dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz

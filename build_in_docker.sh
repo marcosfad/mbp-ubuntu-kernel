@@ -48,7 +48,7 @@ docker run \
       --patchset2Repo='git://github.com/jamlam/mbp-16.1-linux-wifi.git' \
       --patchset2Branch=main \
       --patchset2Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-      --patchset2Filter=grep -E '8001' \
+      --patchset2Filter=\"grep -E '8001'\" \
       --releaseSuffix=t2-aunali1-patched \
       --releasePath=/repo/.build/t2-aunali1-patched \
 "
