@@ -76,7 +76,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            Ubuntu HWE
+            Linux Ubuntu HWE Kernel. Requires Big Sur WiFi drivers.
             Patchsets:
               https://github.com/AdityaGarg8/5.10-patches
           files: |
@@ -157,7 +157,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            Ubuntu HWE Next
+            Linux Ubuntu HWE-Next Kernel. Requires Big Sur WiFi drivers.
             Patchsets:
               https://github.com/jamlam/mbp-16.1-linux-wifi
           files: |

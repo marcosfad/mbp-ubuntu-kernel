@@ -1,5 +1,5 @@
 ---
-name: Build Jamlam Kernel Package
+name: Build Aunali1s Kernel Package
 
 # yamllint disable-line rule:truthy
 on:
@@ -23,8 +23,7 @@ jobs:
           yamllint .
           shellcheck ./*.sh
 
-
-  build-latest-jamlam:
+  build-aunali1-mojave:
     needs: [lint]
     runs-on: ubuntu-20.04
     steps:
@@ -37,8 +36,8 @@ jobs:
           sudo apt install wget
           wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh
           chmod +x ubuntu-mainline-kernel.sh
-          VERSION=$(./ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
-          RELEASE_SUFFIX=t2-jamlam
+          VERSION=$(./ubuntu-mainline-kernel.sh -r v5.12 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
+          RELEASE_SUFFIX=t2-aunali1-mojave
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
@@ -54,10 +53,10 @@ jobs:
              --kernel=${{ steps.variables.outputs.version }} \
              --kernelBranch="v${{ steps.variables.outputs.version }}" \
              --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
-             --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
-             --patchset1Branch=main \
-             --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset1Filter="grep -vE 0001" \
+             --patchset1Repo="git://github.com/aunali1/linux-mbp-arch.git" \
+             --patchset1Branch=master \
+             --patchset1Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
+             --patchset1Filter="grep -vE 000[0-9]" \
              --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -79,9 +78,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            Linux official kernel.
+            Linux official kernel. Requires Mojave WiFi drivers.
             Patchsets:
-              https://github.com/jamlam/mbp-16.1-linux-wifi excluding 0001
+              https://github.com/aunali1/linux-mbp-arch excluding 0001 to 0009
           files: |
             /tmp/artifacts/Packages.gz
             /tmp/artifacts/sha256
@@ -107,7 +106,7 @@ jobs:
         env:
           TRAVIS_TOKEN: ${{ secrets.TRAVIS_TOKEN }}
 
-  build-latest-jamlam-aunali1:
+  build-aunali1-bigsur:
     needs: [lint]
     runs-on: ubuntu-20.04
     steps:
@@ -120,8 +119,8 @@ jobs:
           sudo apt install wget
           wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh
           chmod +x ubuntu-mainline-kernel.sh
-          VERSION=$(./ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
-          RELEASE_SUFFIX=t2-jamlam-patched
+          VERSION=$(./ubuntu-mainline-kernel.sh -r v5.12 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
+          RELEASE_SUFFIX=t2-aunali1-bigsur
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
@@ -137,14 +136,14 @@ jobs:
              --kernel=${{ steps.variables.outputs.version }} \
              --kernelBranch="v${{ steps.variables.outputs.version }}" \
              --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
-             --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
-             --patchset1Branch=main \
-             --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset1Filter="grep -vE 0001|800[0-9]" \
-             --patchset2Repo="git://github.com/aunali1/linux-mbp-arch.git" \
-             --patchset2Branch=master \
-             --patchset2Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
-             --patchset2Filter="grep -E brcmfmac" \
+             --patchset1Repo="git://github.com/aunali1/linux-mbp-arch.git" \
+             --patchset1Branch=master \
+             --patchset1Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
+             --patchset1Filter="grep -vE 000[0-9] | grep -vE brcmfmac" \
+             --patchset2Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
+             --patchset2Branch=main \
+             --patchset2Commit=4c8b393ed7a874e3d9e44a2a467c1b7c74af1260 \
+             --patchset2Filter="grep -E wifi-bigsur" \
              --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -166,10 +165,10 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            Linux official kernel.
+            Linux official kernel. Requires Big Sur WiFi drivers.
             Patchsets:
-              https://github.com/jamlam/mbp-16.1-linux-wifi excluding 0001 and 8001 to 8009
-              https://github.com/aunali1/linux-mbp-arch only including *brcmfmac*
+              https://github.com/aunali1/linux-mbp-arch excluding 0001 to 0009
+              https://github.com/jamlam/mbp-16.1-linux-wifi only 8001
           files: |
             /tmp/artifacts/Packages.gz
             /tmp/artifacts/sha256

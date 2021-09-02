@@ -113,47 +113,44 @@ git clone --depth 1 --single-branch --branch "${KERNEL_BRANCH}" \
   "${KERNEL_REPOSITORY}" "${KERNEL_PATH}"
 cd "${KERNEL_PATH}" || exit
 
-#### Create patch file with custom drivers
-echo >&2 "===]> Info: Creating patch file... "
-cd "${PATCHES_PATH}" || exit
+#### Patches
+echo >&2 "===]> Info: Adding Debian sauce patches... "
+if [ "$debianSaucePatches" != "no" ]; then
+  while IFS= read -r file; do
+    echo "==> Adding $file"
+    patch -p1 <"$file"
+  done < <(find "${PATCHES_PATH}" -type f -name "*.patch" | sort)
+fi
 
 ### Patchset 1
+echo >&2 "===]> Info: Adding patchset 1 ... "
 git clone --single-branch --branch ${PATCHSET_1_BRANCH} ${PATCHSET_1_URL} \
   "${PATCHSET_1_GIT_PATH}"
 cd "${PATCHSET_1_GIT_PATH}" || exit
 git checkout ${PATCHSET_1_HASH}
 
+cd "${KERNEL_PATH}" || exit
 while IFS= read -r file; do
   echo "==> Adding ${file}"
-  cp -rfv "${file}" "${PATCHES_PATH}/${file##*/}"
+  patch -p1 <"$file"
 done < <(find "${PATCHSET_1_GIT_PATH}" -type f -name "*.patch" | ${PATCHSET_1_FILTER} | sort)
 
-### Patchset 2
+### Patchset 2 (optional)
 if [ "$PATCHSET_2_BRANCH" != "" ]; then
+  echo >&2 "===]> Info: Adding patchset 2 ... "
   git clone --single-branch --branch ${PATCHSET_2_BRANCH} ${PATCHSET_2_URL} \
     "${PATCHSET_2_GIT_PATH}"
   cd "${PATCHSET_2_GIT_PATH}" || exit
   git checkout ${PATCHSET_2_HASH}
 
+  cd "${KERNEL_PATH}" || exit
   while IFS= read -r file; do
     echo "==> Adding ${file}"
-    cp -rfv "${file}" "${PATCHES_PATH}/${file##*/}"
+    patch -p1 <"$file"
   done < <(find "${PATCHSET_2_GIT_PATH}" -type f -name "*.patch" | ${PATCHSET_2_FILTER} | sort)
 fi
-#### Apply patches
-cd "${KERNEL_PATH}" || exit
 
-echo >&2 "===]> Info: Applying patches... "
-[ ! -d "${PATCHES_PATH}" ] && {
-  echo 'Patches directory not found!'
-  exit 1
-}
-echo "find ${PATCHES_PATH} -type f -name *.patch | sort"
-while IFS= read -r file; do
-  echo "==> Adding $file"
-  patch -p1 <"$file"
-done < <(find "${PATCHES_PATH}" -type f -name "*.patch" | sort)
-
+### Build process
 chmod a+x "${KERNEL_PATH}"/debian/rules
 chmod a+x "${KERNEL_PATH}"/debian/scripts/*
 chmod a+x "${KERNEL_PATH}"/debian/scripts/misc/*
