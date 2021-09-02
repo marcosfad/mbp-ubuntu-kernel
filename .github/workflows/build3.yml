@@ -132,7 +132,6 @@ jobs:
              --kernelBranch="hwe-5.13" \
              --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
              --debianSaucePatches=no \
-             --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
              --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
              --patchset1Branch=main \
              --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
