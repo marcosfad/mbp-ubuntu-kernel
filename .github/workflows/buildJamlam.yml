@@ -24,7 +24,7 @@ jobs:
           shellcheck ./*.sh
 
 
-  build-jamlam-bigsur:
+  build-j-bigsur:
     needs: [lint]
     runs-on: ubuntu-20.04
     steps:
@@ -38,7 +38,7 @@ jobs:
           wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh
           chmod +x ubuntu-mainline-kernel.sh
           VERSION=$(./ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
-          RELEASE_SUFFIX=t2-jamlam-bigsur
+          RELEASE_SUFFIX=t2-j-bigsur
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
@@ -121,7 +121,7 @@ jobs:
           wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh
           chmod +x ubuntu-mainline-kernel.sh
           VERSION=$(./ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
-          RELEASE_SUFFIX=t2-jamlam-mojave
+          RELEASE_SUFFIX=t2-j-mojave
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"

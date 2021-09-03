@@ -23,7 +23,7 @@ jobs:
           yamllint .
           shellcheck ./*.sh
 
-  build-hwe-jamalam:
+  build-hwe-bigsur:
     needs: [lint]
     runs-on: ubuntu-20.04
     steps:
@@ -34,7 +34,7 @@ jobs:
         id: variables
         run: |
           VERSION=5.11.0
-          RELEASE_SUFFIX=t2-hwe
+          RELEASE_SUFFIX=t2-hwe-bigsur
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
@@ -104,7 +104,7 @@ jobs:
         env:
           TRAVIS_TOKEN: ${{ secrets.TRAVIS_TOKEN }}
 
-  build-hwe-next:
+  build-hwe-mojave:
     needs: [lint]
     runs-on: ubuntu-20.04
     steps:
@@ -114,8 +114,8 @@ jobs:
       - name: find latest release
         id: variables
         run: |
-          VERSION=5.13.0
-          RELEASE_SUFFIX=t2-hwe-next
+          VERSION=5.11.0
+          RELEASE_SUFFIX=t2-hwe-mojave
           REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
@@ -129,13 +129,17 @@ jobs:
           echo Building ${{ steps.variables.outputs.tag }}
           sudo ./build.sh \
             --kernel=${{ steps.variables.outputs.version }} \
-             --kernelBranch="hwe-5.13" \
+             --kernelBranch="hwe-5.11" \
              --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
              --debianSaucePatches=no \
-             --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
+             --patchset1Repo="git://github.com/AdityaGarg8/5.10-patches.git" \
              --patchset1Branch=main \
-             --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
-             --patchset1Filter="grep -vE 0001" \
+             --patchset1Commit=c7507079923dbae525af591d0a680e6960ce769c \
+             --patchset1Filter="grep -vE 0001|800[0-9]" \
+             --patchset2Repo="git://github.com/aunali1/linux-mbp-arch.git" \
+             --patchset2Branch=master \
+             --patchset2Commit=763c20a12ce19a9dc2d3421c65c9a0e328728e38 \
+             --patchset2Filter="grep -E brcmfmac" \
              --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
              --releasePath=/tmp/artifacts
           sudo chmod 777 -R /tmp/artifacts
@@ -157,9 +161,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            Linux Ubuntu HWE-Next Kernel. Requires Big Sur WiFi drivers.
+            Linux Ubuntu HWE Kernel. Requires Big Sur WiFi drivers.
             Patchsets:
-              https://github.com/jamlam/mbp-16.1-linux-wifi
+              https://github.com/AdityaGarg8/5.10-patches
           files: |
             /tmp/artifacts/Packages.gz
             /tmp/artifacts/sha256
