@@ -49,7 +49,7 @@ docker run \
       --patchset2Branch=main \
       --patchset2Commit=4c8b393ed7a874e3d9e44a2a467c1b7c74af1260 \
       --patchset2Filter=\"grep -E wifi-bigsur\" \
-      --releaseSuffix=t2-aunali1-bigSur \
+      --releaseSuffix=t2-aunali1-bigsur \
       --releasePath=/repo/build/t2-aunali1-bigsur \
 "
 ## jamlam
@@ -94,7 +94,7 @@ docker run \
       --patchset2Branch=master \
       --patchset2Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
       --patchset2Filter=\"grep -E brcmfmac\" \
-      --releaseSuffix=t2-jamlam-mojave
+      --releaseSuffix=t2-jamlam-mojave \
       --releasePath=/repo/build/t2-jamlam-mojave \
 "
 
