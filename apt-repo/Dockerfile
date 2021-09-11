@@ -1,11 +1,11 @@
 FROM ubuntu:20.04
 
-ARG RELEASE_VERSION=5.6.4
 ARG GPG_KEY=some_key
 ARG GPG_PASS=some_pass
 ARG GPG_KEY_ID=some_id
 
 ENV GITHUB_URL=github.com/marcosfad/mbp-ubuntu-kernel/releases
+ENV GITHUB_API=api.github.com/repos/marcosfad/mbp-ubuntu-kernel
 ENV REPO_URL=mbp-ubuntu-kernel.herokuapp.com
 ENV LANG en_US.utf8
 
@@ -13,7 +13,7 @@ WORKDIR /var/repo
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      locales dpkg-dev dpkg-sig nginx gettext wget curl apt-utils \
+      locales dpkg-dev dpkg-sig nginx gettext wget curl apt-utils jq \
     && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
@@ -23,17 +23,20 @@ RUN echo "${GPG_KEY}" > PRIVATE_GPG_KEY.asc \
     && gpg --list-keys \
     && gpg --output /var/repo/KEY.gpg --armor --export ${GPG_KEY_ID}
 
-RUN for deb in $(curl -s https://${REPO_URL}/ -L | grep deb | grep a | cut -d'>' -f2 | cut -d'<' -f1); do \
-      wget -q --backups=1 https://${REPO_URL}/${deb}; \
-    done \
-    ; rm -rfv *.1
+#RUN for deb in $(curl -s https://${REPO_URL}/ -L | grep deb | grep a | cut -d'>' -f2 | cut -d'<' -f1); do \
+#      wget -q --backups=1 https://${REPO_URL}/${deb}; \
+#    done \
+#    ; rm -rfv *.1
 
 RUN echo "${GPG_PASS}" > PRIVATE_GPG_PASS \
     && export GPG_TTY=$(tty) && \
-    for deb in $(curl -s https://${GITHUB_URL}/latest -L | grep deb | grep span | cut -d'>' -f2 | cut -d'<' -f1); do \
-      wget -q --backups=1 https://${GITHUB_URL}/download/v${RELEASE_VERSION}/${deb} && \
-      dpkg-sig -k ${GPG_KEY_ID} -v --sign builder "./${deb}" \
-        --gpg-options="--batch --pinentry-mode loopback --no-tty --passphrase-file ./PRIVATE_GPG_PASS"; \
+    for release in $(curl -s https://${GITHUB_API}/releases | jq '.[].name'| grep t2 | cut -d'"' -f2 | sort); do \
+        for deb in $(curl -s https://${GITHUB_URL}/tag/${release} -L | grep deb | grep span | cut -d'>' -f2 | cut -d'<' -f1 | grep -v linux-libc-dev); do \
+            echo ${deb} ; \
+            wget -q --backups=1 https://${GITHUB_URL}/download/${release}/${deb} && \
+            dpkg-sig -k ${GPG_KEY_ID} -v --sign builder "./${deb}" \
+              --gpg-options="--batch --pinentry-mode loopback --no-tty --passphrase-file ./PRIVATE_GPG_PASS"; \
+        done; \
     done \
     ; rm PRIVATE_GPG_PASS \
     ; rm -rfv *.1

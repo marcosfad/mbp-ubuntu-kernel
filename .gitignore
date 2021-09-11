@@ -1,5 +1,5 @@
 /patches/custom-drivers.patch
 /releases
 /linux-*
-/.ideabuild
-.idea
+/.idea
+build

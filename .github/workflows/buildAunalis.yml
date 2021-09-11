@@ -90,22 +90,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish Kernel
-        if: |
-          github.ref == 'refs/heads/master' ||
-          startsWith(github.ref, 'refs/heads/release/')
-        run: |
-          PAYLOAD='{"request": {"branch":"master","sha":"9c060e2ebc7564921e28632232131e1dd80ce679"}}'
-          curl -sSf -X POST \
-            -H "Content-Type: application/json" \
-            -H "Accept: application/json" \
-            -H "Travis-API-Version: 3" \
-            -H "Authorization: token ${TRAVIS_TOKEN}" \
-            -d "{\"request\": {${PAYLOAD}}}" \
-            https://api.travis-ci.com/repo/marcosfad%2Fmbp-ubuntu-kernel/requests
-        env:
-          TRAVIS_TOKEN: ${{ secrets.TRAVIS_TOKEN }}
-
   build-a-bigsur:
     needs: [lint]
     runs-on: ubuntu-20.04
@@ -177,19 +161,3 @@ jobs:
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish Kernel
-        if: |
-          github.ref == 'refs/heads/master' ||
-          startsWith(github.ref, 'refs/heads/release/')
-        run: |
-          PAYLOAD='{"request": {"branch":"master","sha":"9c060e2ebc7564921e28632232131e1dd80ce679"}}'
-          curl -sSf -X POST \
-            -H "Content-Type: application/json" \
-            -H "Accept: application/json" \
-            -H "Travis-API-Version: 3" \
-            -H "Authorization: token ${TRAVIS_TOKEN}" \
-            -d "{\"request\": {${PAYLOAD}}}" \
-            https://api.travis-ci.com/repo/marcosfad%2Fmbp-ubuntu-kernel/requests
-        env:
-          TRAVIS_TOKEN: ${{ secrets.TRAVIS_TOKEN }}
