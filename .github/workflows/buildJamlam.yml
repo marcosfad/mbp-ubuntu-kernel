@@ -1,0 +1,164 @@
+---
+name: Build Jamlam Kernel Package
+
+# yamllint disable-line rule:truthy
+on:
+  [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout repo'
+        uses: actions/checkout@v2
+      - name: 'Set up Python 3.9'
+        uses: actions/setup-python@v2
+      - name: 'Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+          pip install yamllint
+          sudo apt-get install shellcheck bash
+      - name: 'Analysing the code'
+        run: |
+          yamllint .
+          shellcheck ./*.sh
+
+
+  build-j-bigsur:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: find latest release
+        id: variables
+        run: |
+          sudo apt install wget
+          wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh
+          chmod +x ubuntu-mainline-kernel.sh
+          VERSION=$(./ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
+          RELEASE_SUFFIX=t2-j-bigsur
+          REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
+          echo "::set-output name=tag::${VERSION}-${RELEASE_SUFFIX}-${REL}"
+
+      - name: Build script
+        id: build
+        run: |
+          rm -rf /tmp/artifacts
+          mkdir /tmp/artifacts
+          echo Building ${{ steps.variables.outputs.tag }}
+          sudo ./build.sh \
+             --kernel=${{ steps.variables.outputs.version }} \
+             --kernelBranch="v${{ steps.variables.outputs.version }}" \
+             --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
+             --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
+             --patchset1Branch=main \
+             --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
+             --patchset1Filter="grep -vE 0001" \
+             --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
+             --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
+          cd /tmp/artifacts
+          ls -l
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          ls -l
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-${{ steps.variables.outputs.tag }}
+          path: /tmp/artifacts/*
+
+      - name: Release
+        if: |
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/')
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            Linux official kernel. Requires Big Sur WiFi drivers.
+            Patchsets:
+              https://github.com/jamlam/mbp-16.1-linux-wifi excluding 0001
+          files: |
+            /tmp/artifacts/Packages.gz
+            /tmp/artifacts/sha256
+            /tmp/artifacts/*.deb
+          tag_name: v${{ steps.variables.outputs.tag }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-jamlam-mojave:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: find latest release
+        id: variables
+        run: |
+          sudo apt install wget
+          wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh
+          chmod +x ubuntu-mainline-kernel.sh
+          VERSION=$(./ubuntu-mainline-kernel.sh -r v5.13 | grep v | rev | cut -d'v' -f 1 | rev | tail -1)
+          RELEASE_SUFFIX=t2-j-mojave
+          REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
+          echo "::set-output name=tag::${VERSION}-${RELEASE_SUFFIX}-${REL}"
+
+      - name: Build script
+        id: build
+        run: |
+          rm -rf /tmp/artifacts
+          mkdir /tmp/artifacts
+          echo Building ${{ steps.variables.outputs.tag }}
+          sudo ./build.sh \
+             --kernel=${{ steps.variables.outputs.version }} \
+             --kernelBranch="v${{ steps.variables.outputs.version }}" \
+             --kernelRepository="git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git" \
+             --patchset1Repo="git://github.com/jamlam/mbp-16.1-linux-wifi.git" \
+             --patchset1Branch=main \
+             --patchset1Commit=843ecfcaaec0a10707d447ac6d1840db940a9d29 \
+             --patchset1Filter="grep -vE 0001|800[0-9]" \
+             --patchset2Repo="git://github.com/aunali1/linux-mbp-arch.git" \
+             --patchset2Branch=master \
+             --patchset2Commit=9511d5ed2ae0e851dd6a82843daefb2be7d5e212 \
+             --patchset2Filter="grep -E brcmfmac" \
+             --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
+             --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
+          cd /tmp/artifacts
+          ls -l
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          ls -l
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-${{ steps.variables.outputs.tag }}
+          path: /tmp/artifacts/*
+
+      - name: Release
+        if: |
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/')
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            Linux official kernel. Requires Mojave WiFi drivers.
+            Patchsets:
+              https://github.com/jamlam/mbp-16.1-linux-wifi excluding 0001 and 8001 to 8009
+              https://github.com/aunali1/linux-mbp-arch only including *brcmfmac*
+          files: |
+            /tmp/artifacts/Packages.gz
+            /tmp/artifacts/sha256
+            /tmp/artifacts/*.deb
+          tag_name: v${{ steps.variables.outputs.tag }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

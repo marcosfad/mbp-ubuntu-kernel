@@ -1,0 +1,158 @@
+---
+name: Build HWE Kernel Package
+
+# yamllint disable-line rule:truthy
+on:
+  [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout repo'
+        uses: actions/checkout@v2
+      - name: 'Set up Python 3.9'
+        uses: actions/setup-python@v2
+      - name: 'Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+          pip install yamllint
+          sudo apt-get install shellcheck bash
+      - name: 'Analysing the code'
+        run: |
+          yamllint .
+          shellcheck ./*.sh
+
+  build-hwe-bigsur:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: find latest release
+        id: variables
+        run: |
+          VERSION=5.11.0
+          RELEASE_SUFFIX=t2-hwe-bigsur
+          REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
+          echo "::set-output name=tag::${VERSION}-${RELEASE_SUFFIX}-${REL}"
+
+      - name: Build script
+        id: build
+        run: |
+          rm -rf /tmp/artifacts
+          mkdir /tmp/artifacts
+          echo Building ${{ steps.variables.outputs.tag }}
+          sudo ./build.sh \
+            --kernel=${{ steps.variables.outputs.version }} \
+             --kernelBranch="hwe-5.11" \
+             --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
+             --debianSaucePatches=no \
+             --patchset1Repo="git://github.com/AdityaGarg8/5.10-patches.git" \
+             --patchset1Branch=main \
+             --patchset1Commit=c7507079923dbae525af591d0a680e6960ce769c \
+             --patchset1Filter="grep -vE 0001" \
+             --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
+             --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
+          cd /tmp/artifacts
+          ls -l
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          ls -l
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-mbp-${{ steps.variables.outputs.tag }}
+          path: /tmp/artifacts/*
+
+      - name: Release
+        if: |
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/')
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            Linux Ubuntu HWE Kernel. Requires Big Sur WiFi drivers.
+            Patchsets:
+              https://github.com/AdityaGarg8/5.10-patches
+          files: |
+            /tmp/artifacts/Packages.gz
+            /tmp/artifacts/sha256
+            /tmp/artifacts/*.deb
+          tag_name: v${{ steps.variables.outputs.tag }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-hwe-mojave:
+    needs: [lint]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: 'Checkout Repo'
+        uses: actions/checkout@v2
+
+      - name: find latest release
+        id: variables
+        run: |
+          VERSION=5.11.0
+          RELEASE_SUFFIX=t2-hwe-mojave
+          REL=$(./next_version.sh ${VERSION}-${RELEASE_SUFFIX})
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=releaseSuffix::${RELEASE_SUFFIX}"
+          echo "::set-output name=tag::${VERSION}-${RELEASE_SUFFIX}-${REL}"
+
+      - name: Build script
+        id: build
+        run: |
+          rm -rf /tmp/artifacts
+          mkdir /tmp/artifacts
+          echo Building ${{ steps.variables.outputs.tag }}
+          sudo ./build.sh \
+            --kernel=${{ steps.variables.outputs.version }} \
+             --kernelBranch="hwe-5.11" \
+             --kernelRepository="git://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/focal" \
+             --debianSaucePatches=no \
+             --patchset1Repo="git://github.com/AdityaGarg8/5.10-patches.git" \
+             --patchset1Branch=main \
+             --patchset1Commit=c7507079923dbae525af591d0a680e6960ce769c \
+             --patchset1Filter="grep -vE 0001|800[0-9]" \
+             --patchset2Repo="git://github.com/aunali1/linux-mbp-arch.git" \
+             --patchset2Branch=master \
+             --patchset2Commit=763c20a12ce19a9dc2d3421c65c9a0e328728e38 \
+             --patchset2Filter="grep -E brcmfmac" \
+             --releaseSuffix=${{ steps.variables.outputs.releaseSuffix }} \
+             --releasePath=/tmp/artifacts
+          sudo chmod 777 -R /tmp/artifacts
+          cd /tmp/artifacts
+          ls -l
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          ls -l
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-mbp-${{ steps.variables.outputs.tag }}
+          path: /tmp/artifacts/*
+
+      - name: Release
+        if: |
+          github.ref == 'refs/heads/master' ||
+          startsWith(github.ref, 'refs/heads/release/')
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            Linux Ubuntu HWE Kernel. Requires Big Sur WiFi drivers.
+            Patchsets:
+              https://github.com/AdityaGarg8/5.10-patches
+          files: |
+            /tmp/artifacts/Packages.gz
+            /tmp/artifacts/sha256
+            /tmp/artifacts/*.deb
+          tag_name: v${{ steps.variables.outputs.tag }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,15 +2,13 @@
 
 Ubuntu/Mint/Debian kernel 5.6+ with Apple T2 patches built-in. This repo try to keep up with kernel new releases.
 
-We release 2 alternative kernels: **"mbp"** which includes all patches from [Aunali1's linux mbp arch](https://github.com/aunali1/linux-mbp-arch) which should work in mostly everywhere and an alternative release (**"mbp-16x-wifi"**) which includes all patches from [Jamlam's mbp-16.1-linux-wifi](https://github.com/jamlam/mbp-16.1-linux-wifi) which should allow you to use the internal wifi on Macs that came with BigSur pre-installed.
+We release a matrix of kernels to allow you to test with which works the best for you. The main difference are
+* the source used for building the kernel: kernel.org vs Ubuntu HWE
+* the patchset used ([Aunali1](https://github.com/aunali1/linux-mbp-arch) or [Jamlam](https://github.com/jamlam/mbp-16.1-linux-wifi)) and with that the combination of which wifi driver you need. (See [WiFi guide](https://wiki.t2linux.org/guides/wifi/) for more information).
 
-**!! Note for kernel 5.7:** 
+I suggest always starting with the Ubuntu HWE Kernels I have great stability with them.
 
-The releases of the kernel 5.7: The "mbp" release did not include the patch 2001 (drm amd display force link-rate) of Aunali's. The mbp-alt included all patches**.
-
-**!! Warning:**
-
-It seems, that the kernel 5.8 is not working as smooth as the 5.7 branch. If you experience problems while installing or running the linux in your mbp, try using an older Kernel.
+The old type of releases are now deprecated and should not be used.
 
 **Drivers included:**
 
@@ -22,21 +20,13 @@ This project is closely inspired by mikeeq/mbp-fedora-kernel. Thank you @mikeeq 
 
 **If this repo helped you in any way, consider inviting a coffee to the people in the [credits](https://github.com/marcosfad/mbp-ubuntu-kernel#credits) or [me](https://paypal.me/marcosfad)**
 
-## CI status
-
-Build status:
-[![Build Kernel Package](https://github.com/marcosfad/mbp-ubuntu-kernel/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/marcosfad/mbp-ubuntu-kernel/actions/workflows/build.yml)
-
-Travis kernel publish to repository status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
-[![Build Status](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel.svg?branch=master)](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel)
-
 ## INSTALLATION
 
 ### The easy way
 
 Use the [mbp-ubuntu](https://github.com/marcosfad/mbp-ubuntu/releases) live cd to install ubuntu on your Mac.
 
-### Manually
+### Manually using the apt repository
 
 Add the repo to your apt sources
 ```bash
@@ -48,6 +38,12 @@ Install the kernel using apt, for example kernel 5.10.47:
 ```bash
 apt-get install linux-headers-5.10.47-mbp linux-image-5.10.17-mbp
 ```
+
+### Manually downloading the kernel from the Github releases
+
+* Download the release you want to try: linux-image-* linux-headers-* to a folder
+* `cd <folder>`
+* `sudo dpkg -i *.deb`
 
 ## Docs
 
