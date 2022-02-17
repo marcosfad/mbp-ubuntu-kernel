@@ -1,3 +1,9 @@
+# Warning
+
+This Project has been archived in favour of [T2-Ubuntu-Kernel](https://github.com/t2linux/T2-Ubuntu-Kernel)
+
+If you are looking for a way to install Ubuntu on your mac, use the [mbp-ubuntu](https://github.com/marcosfad/mbp-ubuntu/releases) live cd to install it.
+
 # mbp-ubuntu-kernel
 
 Ubuntu/Mint/Debian kernel 5.6+ with Apple T2 patches built-in. This repo try to keep up with kernel new releases.
@@ -26,9 +32,6 @@ This project is closely inspired by mikeeq/mbp-fedora-kernel. Thank you @mikeeq 
 
 Build status:
 [![Build Kernel Package](https://github.com/marcosfad/mbp-ubuntu-kernel/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/marcosfad/mbp-ubuntu-kernel/actions/workflows/build.yml)
-
-Travis kernel publish to repository status - <http://mbp-ubuntu-kernel.herokuapp.com/> :
-[![Build Status](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel.svg?branch=master)](https://travis-ci.com/marcosfad/mbp-ubuntu-kernel)
 
 ## INSTALLATION
 
